@@ -1,0 +1,418 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdlib>
+#include <cctype>
+using namespace std;
+
+int main() {
+	const int SECRET_CODE_SIZE = 4;
+	const int MAX_USER_GUESSES = 10;
+	char secretCode[SECRET_CODE_SIZE];
+	int userGuessNum = 0;
+	char userGuessCode[SECRET_CODE_SIZE];
+	int randVal = 0;
+	char positionChecked[SECRET_CODE_SIZE];
+	int seedNum = 0;
+	int correctPosition = 0;
+	int correctColor = 0;
+	char playAgain = 'y';
+	int menuChoice = 1;
+	int optionChoice = 0;
+
+	srand(time(NULL));
+
+	while (playAgain == 'y') {
+
+		cout << "                                                  Welcome to\n";
+		cout << "    ___       ___       ___       ___       ___       ___            ___       ___       ___       ___   \n";
+		cout << "   /\\__\\     /\\  \\     /\\  \\     /\\  \\     /\\  \\     /\\  \\          /\\__\\     /\\  \\     /\\__\\     /\\  \\  \n";
+		cout << "  /::L_L_   /::\\  \\   /::\\  \\    \\:\\  \\   /::\\  \\   /::\\  \\        /::L_L_   _\\:\\  \\   /:| _|_   /::\\  \\ \n";
+		cout << " /:/L:\\__\\ /::\\:\\__\\ /\\:\\:\\__\\   /::\\__\\ /::\\:\\__\\ /::\\:\\__\\      /:/L:\\__\\ /\\/::\\__\\ /::|/\\__\\ /:/\\:\\__\\ \n";
+		cout << " \\/_/:/  / \\/\\::/  / \\:\\:\\/__/  /:/\\/__/ \\:\\:\\/  / \\;:::/  /      \\/_/:/  / \\::/\\/__/ \\/|::/  / \\:\\/:/  /\n";
+		cout << "   /:/  /    /:/  /   \\::/  /  /:/  /     \\:\\/  /   |:\\/__/         /:/  /   \\:\\__\\     |:/  /   \\::/  / \n";
+		cout << "   \\/__/     \\/__/     \\/__/   \\/__/       \\/__/     \\|__|          \\/__/     \\/__/     \\/__/     \\/__/  \n\n";
+		cout << "Select an otion:\n";
+		cout << "1 - Single Player\n";
+		cout << "2 - Two Player\n";
+		cout << "3 - Learn How To Play\n";
+		cout << "4 - Quit\n\n";
+
+		cin >> menuChoice;
+		cout << endl;
+
+
+		while ((!(isdigit(menuChoice))) && ((menuChoice > 4) || (menuChoice < 1))) {
+			cout << "Invalid choice. Try again: ";
+			cin.clear();
+			cin.ignore(100, '\n');
+			cin >> menuChoice;
+			cout << endl;
+		}
+		cout << endl;
+
+
+		//********** Single Player Mode ************
+		if (menuChoice == 1) {
+			for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+				randVal = (rand() % 6);
+
+				if (randVal == 0)
+				{
+					secretCode[i] = 'r';
+				}
+				else if (randVal == 1)
+				{
+					secretCode[i] = 'y';
+				}
+				else if (randVal == 2)
+				{
+					secretCode[i] = 'g';
+				}
+				else if (randVal == 3)
+				{
+					secretCode[i] = 'b';
+				}
+				else if (randVal == 4)
+				{
+					secretCode[i] = 'w';
+				}
+				else if (randVal == 5)
+				{
+					secretCode[i] = 'p';
+				}
+				else
+				{
+					cout << "error";
+				}
+			}
+
+			/*//Secret Code Print
+			cout << " Here is your secret code!\n";
+			cout << "[";
+			for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+				if (i != (SECRET_CODE_SIZE - 1)) {
+					cout << secretCode[i] << ", ";
+				}
+				else
+				{
+					cout << secretCode[i] << "]\n\n";
+				}
+			}
+			*/
+
+
+			//Enter in Guess
+			cout << "Select your combination of 4 colors: (r = Red, y = Yellow, b = Blue, g = Green, w = White, p = Purple)\n";
+			for (userGuessNum = 1; userGuessNum <= MAX_USER_GUESSES; userGuessNum++) {
+
+				cout << "*** GUESS #" << userGuessNum << " ***\n";
+				cout << "(" << ((MAX_USER_GUESSES - userGuessNum) + 1) << " guesses remaining)\n\n";
+
+				cout << "Enter your guess: ";
+
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					cin >> userGuessCode[i];
+
+					while ((userGuessCode[i] != 'r') && (userGuessCode[i] != 'y')
+						&& (userGuessCode[i] != 'b') && (userGuessCode[i] != 'g')
+						&& (userGuessCode[i] != 'w') && (userGuessCode[i] != 'p')) {
+
+						cout << "Invalid letter for position " << (i + 1) << ". Try again: ";
+						cin >> userGuessCode[i];
+						cout << endl;
+
+					}
+
+				}
+				cout << endl;
+
+				cout << "Guess #" << (userGuessNum) << ":\n";
+				cout << "[";
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					if (i != (SECRET_CODE_SIZE - 1)) {
+						cout << userGuessCode[i] << ", ";
+					}
+					else
+					{
+						cout << userGuessCode[i] << "]\n";
+					}
+				}
+
+
+
+				//Code Checking
+				correctColor = 0;
+				correctPosition = 0;
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					positionChecked[i] = secretCode[i];
+				}
+
+				//Checks for the correct position
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					//cout << "Is '" << userGuessCode[i] << "' the same position as '" << secretCode[i] << "'?\t";				//Uncomment the following 6 comments for diagnostic test
+					if ((userGuessCode[i] == secretCode[i])) {
+						correctPosition++;
+						positionChecked[i] = 'x';
+						//cout << "yes!\n";
+					}
+					else {
+						//cout << "no\n";
+					}
+				}
+
+				//Checks for correct color in the remaining positions
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					for (int j = 0; j < SECRET_CODE_SIZE; j++) {
+						//cout << "Is '" << userGuessCode[i] << " found in " << positionChecked[0] << positionChecked[1] << positionChecked[2] << positionChecked[3] << "? \t\t";
+						if (positionChecked[j] != 'x') {
+							if (userGuessCode[i] == positionChecked[j]) {
+								correctColor++;
+								positionChecked[j] = 'x';
+								//cout << "Yes!\n";
+								break;
+							}
+							else {
+								//cout << "no\n";
+							}
+						}	
+						else {
+							//cout << "Checked\n";
+						}
+					}
+				}
+
+				//Prints results
+				if (correctPosition != SECRET_CODE_SIZE) {
+					cout << "Correct Color & correct Position: " << correctPosition << endl;
+					cout << "Correct Color (wrong position): " << correctColor << endl << endl;
+				}
+				else {
+					break;
+				}
+			}
+
+			if (correctPosition == SECRET_CODE_SIZE) {
+				cout << "***** WINNER! *****\n\n";
+			}
+			else {
+				cout << "***** LOSER *****\n\n";
+				cout << "The correct combination was: [";
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					if (i != (SECRET_CODE_SIZE - 1)) {
+						cout << secretCode[i] << ", ";
+					}
+					else
+					{
+						cout << secretCode[i] << "]\n\n";
+					}
+				}
+			}
+
+			cout << "Would you like to play again? (y,n): ";
+			cin >> playAgain;
+			cout << endl;
+
+			while ((playAgain != 'y') && (playAgain != 'n')) {
+				cout << "Invalid input. Try again: ";
+				cin >> playAgain;
+				cout << endl;
+			}
+			if (playAgain == 'n') {
+				cout << "Thank you for playing!";
+				return 0;
+			}
+			else {
+				cout << endl << endl << endl << endl;
+			}
+		}
+
+
+
+		//********** Two Player Mode ************
+		if (menuChoice == 2) {
+			cout << "Enter a secret code with " << SECRET_CODE_SIZE << " colors (r = Red, y = Yellow, b = Blue, g = Green, w = White, p = Purple)\n";
+
+			for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+				cin >> secretCode[i];
+
+				while ((secretCode[i] != 'r') && (secretCode[i] != 'y')
+					&& (secretCode[i] != 'b') && (secretCode[i] != 'g')
+					&& (secretCode[i] != 'w') && (secretCode[i] != 'p')) {
+
+					cout << "Invalid letter for position " << (i + 1) << ". Try again: ";
+					cin >> secretCode[i];
+					cout << endl;
+
+				}
+
+			}
+			cout << "\n********************************************************************************************";
+			cout << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl;
+			cout << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl;
+			cout << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl;
+			cout << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl;
+			cout << "********************************************************************************************\n";
+			cout << "Now pass the device to the other player.\n\n";
+
+
+			//Enter in Guess
+			cout << "Enter your combination of " << SECRET_CODE_SIZE << " colors: (r = Red, y = Yellow, b = Blue, g = Green, w = White, p = Purple)\n";
+			for (userGuessNum = 1; userGuessNum <= MAX_USER_GUESSES; userGuessNum++) {
+
+				cout << "*** GUESS #" << userGuessNum << " ***\n";
+				cout << "(" << ((MAX_USER_GUESSES - userGuessNum) + 1) << " guesses remaining)\n\n";
+
+				cout << "Enter your guess: ";
+
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					cin >> userGuessCode[i];
+
+					while ((userGuessCode[i] != 'r') && (userGuessCode[i] != 'y')
+						&& (userGuessCode[i] != 'b') && (userGuessCode[i] != 'g')
+						&& (userGuessCode[i] != 'w') && (userGuessCode[i] != 'p')) {
+
+						cout << "Invalid letter for position " << (i + 1) << ". Try again: ";
+						cin >> userGuessCode[i];
+						cout << endl;
+
+					}
+
+				}
+				cout << endl;
+
+				cout << "Guess #" << (userGuessNum) << ":\n";
+				cout << "[";
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					if (i != (SECRET_CODE_SIZE - 1)) {
+						cout << userGuessCode[i] << ", ";
+					}
+					else
+					{
+						cout << userGuessCode[i] << "]\n";
+					}
+				}
+
+
+				//Code Checking
+				correctColor = 0;
+				correctPosition = 0;
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					positionChecked[i] = secretCode[i];
+				}
+
+				//Checks for the correct position
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					//cout << "Is '" << userGuessCode[i] << "' the same position as '" << secretCode[i] << "'?\t";				//Uncomment the following 6 comments for diagnostic test
+					if ((userGuessCode[i] == secretCode[i])) {
+						correctPosition++;
+						positionChecked[i] = 'x';
+						//cout << "yes!\n";
+					}
+					else {
+						//cout << "no\n";
+					}
+				}
+
+				//Checks for correct color in the remaining positions
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					for (int j = 0; j < SECRET_CODE_SIZE; j++) {
+						//cout << "Is '" << userGuessCode[i] << " found in " << positionChecked[0] << positionChecked[1] << positionChecked[2] << positionChecked[3] << "? \t\t";
+						if (positionChecked[j] != 'x') {
+							if (userGuessCode[i] == positionChecked[j]) {
+								correctColor++;
+								positionChecked[j] = 'x';
+								//cout << "Yes!\n";
+								break;
+							}
+							else {
+								//cout << "no\n";
+							}
+						}
+						else {
+							//cout << "Checked\n";
+						}
+					}
+				}
+
+				//Prints results
+				if (correctPosition != SECRET_CODE_SIZE) {
+					cout << "Correct Color & correct Position: " << correctPosition << endl;
+					cout << "Correct Color (wrong position): " << correctColor << endl << endl;
+				}
+				else {
+					break;
+				}
+			}
+
+
+			if (correctPosition == SECRET_CODE_SIZE) {
+				cout << "***** WINNER! *****\n\n";
+			}
+			else {
+
+				cout << "***** LOSER *****\n\n";
+				cout << "The correct combination was: [";
+				for (int i = 0; i < SECRET_CODE_SIZE; i++) {
+					if (i != (SECRET_CODE_SIZE - 1)) {
+						cout << secretCode[i] << ", ";
+					}
+					else
+					{
+						cout << secretCode[i] << "]\n\n";
+					}
+				}
+
+			}
+			cout << "Would you like to play again? (y,n): ";
+			cin >> playAgain;
+			cout << endl;
+
+			while ((playAgain != 'y') && (playAgain != 'n')) {
+				cout << "Invalid input. Try again: ";
+				cin >> playAgain;
+				cout << endl;
+			}
+			if (playAgain == 'n') {
+				cout << "Thank you for playing!";
+				return 0;
+			}
+			else {
+				cout << endl << endl << endl << endl;
+			}
+
+		}
+
+
+		//******************** How to Play ***********************
+		if (menuChoice == 3) {
+			cout << "********** How to play **********\n\n";
+			cout << "Master Mind is a code breaking game. You may play this agaisnt a computer or with a friend.\n\n";
+			cout << "SINGLE PLAYER MODE\n";
+			cout << "The computer will randomly generate a secret code of " << SECRET_CODE_SIZE << " colors. It is your goal to guess the code!\n";
+			cout << "To enter a guess, type in the first letter of each color in the order you want then push enter.\n";
+			cout << "Do not put type an uppercase letter, and do not add any spaces. (Example : \" rgwp \")\n";
+			cout << "The computer will report back to you the number of colors that are correct, and how many are in the right position.\n";
+			cout << "Use the power of deduction to figure out the exact secret code comination!\n";
+			cout << "But be careful, you only have " << MAX_USER_GUESSES << " guesses to do it!\n\n";
+
+			cout << "TWO PLAYER MODE\n";
+			cout << "Enter in a secret code, then give the device to your friend. Make sure when you enter your code that it remains a secret!\n\n";
+
+			cout << "WINNING\n";
+			cout << "For a player to win they must enter the exact color combination in the correct order.\n";
+			cout << "If the player fails to guess the code in " << MAX_USER_GUESSES << " guesses, then the player loses the game.\n\n";
+
+			cout << "If you still don't know how to play, then Google it. ¯\\_(o_o)_/¯\n\n\n\n\n";
+
+
+		}
+
+		//********** Quit **********
+		if (menuChoice == 4) {
+			cout << "Thank you for playing!";
+			return 0;
+		}
+	}
+	return 0;
+}
